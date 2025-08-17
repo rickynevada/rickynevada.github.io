@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Matt Hicks | Arduino Frequency Counter</title>
+    <script src="google-code-prettify/prettify.js"></script>
+    <link rel="stylesheet" href="google-code-prettify/prettify.css"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" 
+		      type="image/png" 
+		      href="img/voydosfavicon.png">
+  </head>
+  <body onload="prettyPrint()">
+    <header>
+      <div class="container">
+        <div id="branding">
+          <h1><span class="highlight">Matt Hicks</span></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="education.html">Education</a></li>
+                <li><a href="experience.html">Experience</a></li>
+                <li class="current"><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section id="banner">
+      <div class="container">
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+		  
+      <h3>Video of Frequency Counter</h3>
+      <p>I made this frequency counter in the microprocessor system design class at UWB senior year.  Used an online tone generator to test.</p><br>
+		  <video width="50%" controls>
+		    <source src="images/arduinofc/ArduinofcVid_Comp.mp4" type="video/mp4" >
+		    Your browser does not support HTML5 video.
+		  </video>
+		  <br>
+		  <br>
+		  
+      	  <h3>Arduino FC Top Assembled</h3>
+          <img src="images/arduinofc/arduinofc_top.jpg" alt="Arduino FC" width="50%">
+		  <br>
+		  <br>
+		  <br>
+		  
+      <h3>Arduino FC Bottom Assembled</h3>
+		  <p>Poor Radioshack :(</p><br>
+        <img src="images/arduinofc/arduinofc_bot.jpg" alt="Arduino FC Bot" width="50%">
+		  
+      <h3>Audio output captured on oscilloscope.  Input to LM386.</h3>
+      <img src="images/arduinofc/audio_output.jpg" alt="Arduino FC Audio Output" width="50%">
+		  
+      <h3>Comparator input after signal conditioning.  Removed DC offset and clipped waveform.</h3>
+      <img src="images/arduinofc/comparator_input.png" alt="Comparator input after signal conditioning" width="50%">
+		  
+      <h3>Comparator output to GPIO on microcontroller.</h3>
+      <img src="images/arduinofc/comparator_output.png" alt="Comparator output" width="50%">
+
+      <p>Arduino Sketch</p>
+        <pre class="prettyprint"><code>
+			
+          #define CMPO  2
+
+          #define BCD0  3
+          #define BCD1  4
+          #define BCD2  5
+          #define BCD3  6
+
+          #define SSEG0  11
+          #define SSEG1  10
+          #define SSEG2  9
+          #define SSEG3  8
+          #define SSEG4  7
+
+          int displayedDigit = 0;
+          int displayedValue = 0;
+
+          int toggleCount = 0;
+              
+          void setup() {
+
+              Serial.begin(115200);
+            
+              pinMode(BCD0, OUTPUT);
+              pinMode(BCD1, OUTPUT);
+              pinMode(BCD2, OUTPUT);
+              pinMode(BCD3, OUTPUT);
+
+              pinMode(SSEG0, OUTPUT);
+              pinMode(SSEG1, OUTPUT);
+              pinMode(SSEG2, OUTPUT);
+              pinMode(SSEG3, OUTPUT);
+              pinMode(SSEG4, OUTPUT);
+              
+              pinMode(CMPO, INPUT);
+
+              attachInterrupt(digitalPinToInterrupt(CMPO), CMPO_Int, RISING );
+                  
+              noInterrupts();           // disable all interrupts
+            
+              TCCR1A = 0;
+              TCCR1B = 0;
+              TCNT1  = 0;
+              OCR1A = 62500;            // 1Hz int
+              TCCR1B |= (1 << WGM12);   // CTC mode
+              TCCR1B |= (1 << CS12);    // 256 prescaler
+              TIMSK1 |= (1 << OCIE1A);
+            
+              interrupts();
+              
+          }
+
+          void loop() {
+              delay(3);
+              setSSEG();
+          }
+
+          void writeDigitValue(int value)
+          {
+            switch(value)
+            {
+              case 0:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, LOW);
+                break;
+              case 1:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, HIGH);
+                break;
+              case 2:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, HIGH);
+                digitalWrite(BCD3, LOW);
+                break;
+              case 3:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, HIGH);
+                digitalWrite(BCD3, HIGH);
+                break;
+              case 4:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, HIGH);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, LOW);
+                break;
+              case 5:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, HIGH);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, HIGH);
+                break;
+              case 6:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, HIGH);
+                digitalWrite(BCD2, HIGH);
+                digitalWrite(BCD3, LOW);
+                break;
+              case 7:
+                digitalWrite(BCD0, LOW);
+                digitalWrite(BCD1, HIGH);
+                digitalWrite(BCD2, HIGH);
+                digitalWrite(BCD3, HIGH);
+                break;
+              case 8:
+                digitalWrite(BCD0, HIGH);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, LOW);
+                break;
+              case 9:
+                digitalWrite(BCD0, HIGH);
+                digitalWrite(BCD1, LOW);
+                digitalWrite(BCD2, LOW);
+                digitalWrite(BCD3, HIGH);
+                break;
+              default:
+                digitalWrite(BCD0, HIGH);
+                digitalWrite(BCD1, HIGH);
+                digitalWrite(BCD2, HIGH);
+                digitalWrite(BCD3, HIGH);
+                break;
+            }
+          }
+
+          void setSSEG()
+          {
+            switch(displayedDigit)
+            {
+              case 0:
+                digitalWrite(SSEG0, HIGH);
+                digitalWrite(SSEG1, LOW);
+                digitalWrite(SSEG2, LOW);
+                digitalWrite(SSEG3, LOW);
+                digitalWrite(SSEG4, LOW);
+                writeDigitValue(displayedValue%10);
+                break;
+              case 1:
+                digitalWrite(SSEG0, LOW);
+                digitalWrite(SSEG1, HIGH);
+                digitalWrite(SSEG2, LOW);
+                digitalWrite(SSEG3, LOW);
+                digitalWrite(SSEG4, LOW);
+                writeDigitValue(displayedValue%100 / 10);
+                break;
+              case 2:
+                digitalWrite(SSEG0, LOW);
+                digitalWrite(SSEG1, LOW);
+                digitalWrite(SSEG2, HIGH);
+                digitalWrite(SSEG3, LOW);
+                digitalWrite(SSEG4, LOW);
+                writeDigitValue(displayedValue%1000 / 100);
+                break;
+              case 3:
+                digitalWrite(SSEG0, LOW);
+                digitalWrite(SSEG1, LOW);
+                digitalWrite(SSEG2, LOW);
+                digitalWrite(SSEG3, HIGH);
+                digitalWrite(SSEG4, LOW);
+                writeDigitValue(displayedValue%10000 / 1000);
+                break;
+              case 4:
+                digitalWrite(SSEG0, LOW);
+                digitalWrite(SSEG1, LOW);
+                digitalWrite(SSEG2, LOW);
+                digitalWrite(SSEG3, LOW);
+                digitalWrite(SSEG4, HIGH);
+                writeDigitValue(displayedValue/10000);
+                break;
+              default:
+                digitalWrite(SSEG0, LOW);
+                digitalWrite(SSEG1, LOW);
+                digitalWrite(SSEG2, LOW);
+                digitalWrite(SSEG3, LOW);
+                digitalWrite(SSEG4, LOW);
+                break;
+            }
+            if(displayedDigit++ == 5)
+            {
+              displayedDigit = 0;
+            }
+          }
+
+          void CMPO_Int()
+          {
+            toggleCount++;
+          }
+
+          //Interrupts at 1Hz
+          ISR(TIMER1_COMPA_vect)
+          {
+            displayedValue = toggleCount;
+            toggleCount = 0;
+            
+          }
+          </code></pre>
+
+      </div>
+    </section>
+
+    <footer>
+      <p>Voydos, Copyright &copy; 2016-2025</p>
+    </footer>
+  </body>
+</html>
