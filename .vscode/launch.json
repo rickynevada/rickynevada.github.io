@@ -9,7 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "file": "c:\\software_dev\\voydos_website_github\\index.html"
+            "file": "c:\\software_dev\\rickynevada.github.io\\index.html"
         }
     ]
 }
