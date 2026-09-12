@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Matt Hicks | Voydophone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#0d1117">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" 
 		      type="image/jpg" 
@@ -15,12 +19,22 @@
         <div id="branding">
           <h1><span class="highlight">Matt Hicks</span></h1>
         </div>
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
         <nav>
-            <ul>
+            <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="education.html">Education</a></li>
                 <li><a href="experience.html">Experience</a></li>
-                <li class="current"><a href="projects.html">Projects</a></li>
+                <li class="has-submenu current"><a href="projects.html">Projects</a>
+                    <ul class="submenu">
+                        <li><a href="projects.html">All Projects</a></li>
+                        <li><a href="arduino_fc.html">Arduino Frequency Counter</a></li>
+                        <li class="current"><a href="voydophone.html">Voydophone</a></li>
+                        <li><a href="automotive.html">Automotive</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
       </div>
@@ -55,7 +69,8 @@
     </section>
 
     <footer>
-      <p>Matt Hicks, Copyright &copy; 2016-2025</p>
+      <p>Matt Hicks, Copyright &copy; 2016-2026</p>
     </footer>
+    <script src="js/nav.js"></script>
   </body>
 </html>

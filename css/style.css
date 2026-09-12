@@ -1,8 +1,44 @@
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+:root{
+  --bg:            #0d1117;
+  --bg-raised:     #12161d;
+  --bg-elevated:   #171c25;
+  --border:        rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+
+  --text:          #e6edf3;
+  --text-muted:    #9aa7b4;
+  --heading:       #f2f6fa;
+
+  --accent:        #38bdf8;
+  --accent-strong: #7dd3fc;
+  --accent-dim:    rgba(56,189,248,0.12);
+
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
-  font: 15px/1.5 "Georgia", Helvetica,sans-serif;
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.65;
   padding:0;
   margin:0;
-  background-color:#000000;
+  background-color:var(--bg);
+  color:var(--text);
+}
+
+h1,h2,h3,h4{
+  font-family:var(--font-heading);
+  color:var(--heading);
+  line-height:1.25;
 }
 
 /* Global */
@@ -13,78 +49,300 @@ body{
 }
 
 .button_1{
-  height:38px;
-  background:#e8491d;
+  height:40px;
+  background:var(--accent);
   border:0;
-  padding-left: 20px;
-  padding-right:20px;
-  color:#ffffff;
+  border-radius:6px;
+  padding-left: 22px;
+  padding-right:22px;
+  color:#08131a;
+  font-family:var(--font-body);
+  font-weight:600;
+  cursor:pointer;
+  transition:background-color 0.2s ease;
+}
+
+.button_1:hover{
+  background:var(--accent-strong);
 }
 
 .dark{
   padding:15px;
-  background:#35424a;
-  color:#ffffff;
+  background:var(--bg-elevated);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
   margin-top:10px;
   margin-bottom:10px;
 }
 
-/* Header **/
+/* ==========================================================================
+   Header / Navigation
+   ========================================================================== */
 header{
-  background:#373737;
-  color:#ffffff;
-  padding-top:30px;
+  background:var(--bg-raised);
+  color:var(--text);
   min-height:70px;
-  border-bottom:#dcd0c0 3px solid;
+  border-bottom:2px solid var(--accent);
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 2px 16px rgba(0,0,0,0.5);
+}
+
+header .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  overflow:visible;
+  padding-top:18px;
+  padding-bottom:18px;
 }
 
 header a{
-  color:#ffffff;
+  color:var(--text);
   text-decoration:none;
   text-transform: uppercase;
-  font-size:16px;
-}
-
-header li{
-  float:left;
-  display:inline;
-  padding: 0 20px 0 20px;
+  font-family:var(--font-body);
+  font-size:14px;
+  font-weight:500;
+  letter-spacing:0.04em;
 }
 
 header #branding{
-  float:left;
+  float:none;
 }
 
 header #branding h1{
   margin:0;
+  font-size:24px;
+  font-weight:600;
 }
 
 header nav{
-  float:left;
-  margin-top:10px;
+  float:none;
+  margin-top:0;
 }
 
-header .highlight, header .current a{
-  color:#dcd0c0;
-  font-weight:bold;
+header .highlight{
+  color:var(--accent);
+  font-weight:600;
 }
 
 header a:hover{
-  color:#cccccc;
+  color:var(--accent-strong);
 }
 
+/* Nav menu (desktop: horizontal row) */
+.nav-menu{
+  display:flex;
+  align-items:center;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.nav-menu > li{
+  float:none;
+  display:block;
+  padding:0;
+  margin-left:8px;
+  position:relative;
+}
+
+.nav-menu > li > a{
+  display:block;
+  padding:10px 16px;
+  border-radius:5px;
+  transition:background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-menu > li > a:hover,
+.nav-menu > li.current > a{
+  background:var(--accent-dim);
+  color:var(--accent-strong);
+}
+
+/* Little caret to hint a submenu exists */
+.nav-menu li.has-submenu > a::after{
+  content:"";
+  display:inline-block;
+  margin-left:6px;
+  width:0;
+  height:0;
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:4px solid currentColor;
+  vertical-align:middle;
+  opacity:0.7;
+}
+
+/* Submenu / dropdown panel */
+.submenu{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:none;
+}
+
+.submenu a{
+  text-transform:none;
+  font-size:14px;
+  letter-spacing:normal;
+  font-weight:400;
+}
+
+/* Hamburger toggle button (hidden on desktop) */
+.nav-toggle{
+  display:none;
+  width:38px;
+  height:32px;
+  padding:0;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.nav-toggle span{
+  display:block;
+  height:3px;
+  width:100%;
+  background:var(--text);
+  border-radius:2px;
+  transition:transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle.is-active span:nth-child(1){ transform:translateY(11px) rotate(45deg); }
+.nav-toggle.is-active span:nth-child(2){ opacity:0; }
+.nav-toggle.is-active span:nth-child(3){ transform:translateY(-11px) rotate(-45deg); }
+
+/* Desktop behaviour (hover-revealed dropdown) */
+@media (min-width:769px){
+  .nav-menu li.has-submenu:hover > .submenu,
+  .nav-menu li.has-submenu:focus-within > .submenu{
+    display:block;
+  }
+
+  /* Invisible bridge so the pointer stays "inside" the menu while moving
+     from the Projects link down into the dropdown -- without this, the
+     gap below the link closes the menu before the pointer reaches it. */
+  .nav-menu li.has-submenu::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    height:10px;
+  }
+
+  .submenu{
+    position:absolute;
+    top:100%;
+    left:0;
+    min-width:230px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border-strong);
+    border-radius:6px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.5);
+    padding:6px 0;
+    margin-top:10px;
+  }
+
+  .submenu li{
+    display:block;
+  }
+
+  .submenu a{
+    display:block;
+    padding:9px 18px;
+  }
+
+  .submenu a:hover,
+  .submenu li.current > a{
+    background:var(--accent-dim);
+    color:var(--accent-strong);
+  }
+}
+
+/* Mobile behaviour (hamburger + stacked list, submenu always expanded) */
+@media (max-width:768px){
+  .container{
+    width:92%;
+  }
+
+  header .container{
+    position:relative;
+  }
+
+  .nav-toggle{
+    display:flex;
+  }
+
+  .nav-menu{
+    display:none;
+    flex-direction:column;
+    align-items:stretch;
+    width:100%;
+    margin-top:16px;
+  }
+
+  .nav-menu.nav-open{
+    display:flex;
+  }
+
+  .nav-menu > li{
+    margin-left:0;
+    border-top:1px solid var(--border);
+  }
+
+  .nav-menu > li > a{
+    padding:12px 6px;
+    border-radius:0;
+  }
+
+  .submenu{
+    display:block;
+    padding-left:16px;
+    background:rgba(255,255,255,0.03);
+  }
+
+  .submenu a{
+    display:block;
+    padding:10px 6px;
+  }
+
+  .submenu a:hover,
+  .submenu li.current > a{
+    color:var(--accent-strong);
+  }
+}
+
+/* ==========================================================================
+   Page content
+   ========================================================================== */
 #banner{
-  min-height:50px;
-  max-height:50px;
+  min-height:40px;
+  max-height:40px;
   text-align:center;
-  color:#f4f4f4;
+  color:var(--text-muted);
+}
+
+#banner h2{
+  margin:0;
+  padding:0;
+  border:0;
+  font-size:26px;
+  line-height:40px;
 }
 
 section{
   min-height:400px;
   text-align:left;
-  background:#f4f4f4;
-  color:#000000;
+  background:var(--bg);
+  color:var(--text);
 }
 
 section h1{
@@ -94,8 +352,43 @@ section h1{
   margin-bottom:10px;
 }
 
-section p{
+section h2{
+  font-size:30px;
+  margin-top:2.2em;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+
+section h3{
   font-size:20px;
+  color:var(--accent-strong);
+  margin-top:1.8em;
+  margin-bottom:0.5em;
+}
+
+section p{
+  font-size:17px;
+  color:var(--text);
+}
+
+section p,
+section li{
+  max-width:900px;
+}
+
+/* Links inside page content (header links are styled separately above) */
+section a,
+footer a{
+  color:var(--accent);
+  text-decoration:underline;
+  text-decoration-color:rgba(56,189,248,0.4);
+  text-underline-offset:2px;
+}
+
+section a:hover,
+footer a:hover{
+  color:var(--accent-strong);
+  text-decoration-color:var(--accent-strong);
 }
 
 ul#bullet_list {
@@ -105,9 +398,9 @@ ul#bullet_list {
 
 ul#bullet_list li::before {
   content: "\2022";
-  color: #00ff00;
+  color: var(--accent);
   font-weight: bold;
-  display: inline-block; 
+  display: inline-block;
   width: 1em;
   margin-left: -1em;
 }
@@ -122,6 +415,9 @@ aside#sidebar{
 aside#sidebar .quote input, aside#sidebar .quote textarea{
   width:90%;
   padding:5px;
+  background:var(--bg-elevated);
+  color:var(--text);
+  border:1px solid var(--border);
 }
 
 /* Main-col */
@@ -133,20 +429,33 @@ article#main-col{
 footer{
   padding:20px;
   margin-top:20px;
-  color:#dcd0c0;
-  background-color:#373737;
+  color:var(--text-muted);
+  background-color:var(--bg-raised);
+  border-top:1px solid var(--border);
   text-align: center;
+  font-size:14px;
 }
 
 img {
     max-width: 100%;
     max-height: 600px;
+    border-radius:8px;
+    border:1px solid var(--border);
 }
 
-pre
-{
+pre{
     width: auto;
     overflow: auto;
     overflow-y: hidden;
-    scrollbar-base-color:#ffeaff
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:16px;
+}
+
+pre code,
+code{
+    font-family:var(--font-mono);
+    font-size:14px;
+    color:var(--text);
 }
