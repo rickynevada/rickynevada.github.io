@@ -437,10 +437,24 @@ footer{
 }
 
 img {
+    display: block;
+    width: 100%;
+    height: auto;
     max-width: 100%;
-    max-height: 600px;
     border-radius:8px;
     border:1px solid var(--border);
+    margin: 4px 0 16px;
+}
+
+/* Desktop: don't stretch photos past their real resolution -- show them at
+   native size (shrinking only if the container is narrower), and cap very
+   tall images so one photo can't dominate the page. */
+@media (min-width:769px){
+  img {
+    width: auto;
+    max-height: 600px;
+    margin: 4px 8px 16px 0;
+  }
 }
 
 pre{
